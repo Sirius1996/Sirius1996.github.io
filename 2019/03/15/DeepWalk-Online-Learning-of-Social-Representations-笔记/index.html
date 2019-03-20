@@ -1,23 +1,31 @@
-<!DOCTYPE html><html><head><meta name="generator" content="Hexo 3.8.0"><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> DeepWalk: Online Learning of Social Representations 笔记 · Hexo</title><meta name="description" content="DeepWalk: Online Learning of Social Representations 笔记 - Zidi Chen"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://yoursite.com/atom.xml" title="Hexo"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="https://weibo.com/u/5519474336" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Sirius1996" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="https://www.linkedin.com/in/%E5%AD%90%E8%BF%AA-%E9%99%88-43010911a/" target="_blank" class="nav-list-link">LINKEDIN</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">DeepWalk: Online Learning of Social Representations 笔记</h1><div class="post-info">Mar 15, 2019</div><div class="post-content"><h3 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h3><p>DeepWalk是<strong>网络表征学习</strong>的比较基本的算法，用于学习网络中顶点的<strong>向量表示</strong>（即学习图的结构特征即属性，并且属性个数为向量的维数），使得能够应用传统机器学习算法解决相关的问题。</p>
-<h3 id="Algorithm-Theory"><a href="#Algorithm-Theory" class="headerlink" title="Algorithm Theory"></a>Algorithm Theory</h3><ul>
-<li><p>Input: 邻接表</p>
+<!DOCTYPE html><html><head><meta name="generator" content="Hexo 3.8.0"><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> DeepWalk: Online Learning of Social Representations 笔记 · Hexo</title><meta name="description" content="DeepWalk: Online Learning of Social Representations 笔记 - Zidi Chen"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://yoursite.com/atom.xml" title="Hexo"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="https://weibo.com/u/5519474336" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Sirius1996" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="https://www.linkedin.com/in/%E5%AD%90%E8%BF%AA-%E9%99%88-43010911a/" target="_blank" class="nav-list-link">LINKEDIN</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">DeepWalk: Online Learning of Social Representations 笔记</h1><div class="post-info">Mar 15, 2019</div><div class="post-content"><h3 id="introduction"><a class="markdownIt-Anchor" href="#introduction"></a> Introduction</h3>
+<p>DeepWalk是<strong>网络表征学习</strong>的比较基本的算法，用于学习网络中顶点的<strong>向量表示</strong>（即学习图的结构特征即属性，并且属性个数为向量的维数），使得能够应用传统机器学习算法解决相关的问题。</p>
+<h3 id="algorithm-theory"><a class="markdownIt-Anchor" href="#algorithm-theory"></a> Algorithm Theory</h3>
+<ul>
+<li>
+<p>Input: 邻接表</p>
 </li>
-<li><p>Output</p>
+<li>
+<p>Output</p>
 <p>第一行为节点个数和向量维数，后面每行为一个节点的向量表示，第一列为NodeID。</p>
 </li>
-<li><p>Innovation</p>
+<li>
+<p>Innovation</p>
 <p>借助语言建模word2vec中的一个模型，skip-gram来学习结点的向量表示。<strong>将网络中的结点模拟为语言模型中的单词，而结点的序列（可由随机游走得到）模拟为语言中的句子，作为skip-gram的输入。</strong></p>
 </li>
-<li><p>Process</p>
+<li>
+<p>Process</p>
 <p>Random + skip-gram model</p>
 <p><img src="/2019/03/15/DeepWalk-Online-Learning-of-Social-Representations-笔记/image-20190308144757215.png" alt="image-20190308144757215"></p>
 </li>
-<li><p>Random-walk</p>
+<li>
+<p>Random-walk</p>
 <p>Random Walk从截断的随机游走序列中得到网络的局部信息，并以此来学习结点的向量表示。</p>
 <p>deepwalk中的实现是<strong>完全随机</strong>的，根据<strong>Random Walk</strong>的不同，后面又衍生出了<strong>node2vec</strong>算法，解决了deepwalk定义的结点相似度不能很好反映原网络结构的问题。</p>
 <p>所谓随机游走(random walk)，就是在网络上不断重复地随机选择游走路径，最终形成一条贯穿网络的路径。从某个特定的端点开始，游走的每一步都从与当前节点相连的边中随机选择一条，沿着选定的边移动到下一个顶点，不断重复这个过程。</p>
 </li>
-<li><p>Skip-gram model</p>
+<li>
+<p>Skip-gram model</p>
 <p><strong>skip-gram</strong> 是使用<strong>单词来预测上下文</strong>的一个模型，通过最大化窗口内单词之间的共现概率来学习向量表示，在这里扩展之后便是<strong>使用结点来预测上下文</strong>，并且不考虑句子中结点出现的顺序，<strong>具有相同上下文的结点的表示相似。（Ps:两个node同时出现在一个序列中的频率越高，两个node的相似度越高。）</strong></p>
 <p><strong>结点相似性度量：</strong> 上下文的相似程度（LINE中的二阶相似度）</p>
 <p>共现概率根据<strong>独立性假设</strong>可以转化为各条件概率之积即</p>
